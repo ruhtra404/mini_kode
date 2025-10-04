@@ -1,6 +1,11 @@
-# mini_claude_code 中文说明
+# 霸道总裁爱上2分钟手搓Claude Code【懒羊羊青春版】
 
 > Languages: [中文](README.md) | [English](README_en.md)
+
+<img height="450" alt="image" src="https://github.com/user-attachments/assets/0e1e31f8-064f-4908-92ce-121e2eb8d453" />
+<img height="450" alt="image" src="https://github.com/user-attachments/assets/2884ea3a-a299-463a-b69c-2ec93088fd17" />
+
+<img width="690" alt="image" src="https://github.com/user-attachments/assets/e04d0e73-b6d9-4308-91cc-279f569856fb" />
 
 本仓库展示了一个逐步迭代的「迷你 Claude Code」实现。我们用最少的代码复刻官方工作流的关键体验，分为两个主要版本：
 
