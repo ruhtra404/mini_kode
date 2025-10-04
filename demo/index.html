@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Race Car Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            cursor: none;
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            z-index: 100;
+            font-size: 18px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+        
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            z-index: 100;
+            font-size: 14px;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            z-index: 200;
+            text-align: center;
+        }
+        
+        #menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 300;
+            text-align: center;
+            background: rgba(0,0,0,0.9);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(15px);
+            display: none;
+        }
+        
+        .menu-button {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            margin: 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .menu-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .speed-bar {
+            width: 200px;
+            height: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .speed-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff00, #ffff00, #ff0000);
+            border-radius: 10px;
+            transition: width 0.1s ease;
+        }
+        
+        .minimap {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 150px;
+            height: 150px;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid white;
+            border-radius: 10px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="loading">
+            <div style="font-size: 32px; margin-bottom: 20px;">🏎️ ENHANCED RACE CAR GAME</div>
+            <div style="font-size: 16px;">Loading advanced physics engine...</div>
+            <div style="margin-top: 20px;">🔄 Initializing 3D graphics...</div>
+        </div>
+        
+        <div id="menu">
+            <h2>🏁 RACE CAR CHAMPIONSHIP 🏁</h2>
+            <button class="menu-button" onclick="game.startRace()">🏎️ START RACE</button>
+            <button class="menu-button" onclick="game.showSettings()">⚙️ SETTINGS</button>
+            <button class="menu-button" onclick="game.showControls()">🎮 CONTROLS</button>
+            <div style="margin-top: 20px; font-size: 14px;">
+                <div>🏆 Best Lap: <span id="bestLap">--:--</span></div>
+                <div>🎯 Total Races: <span id="totalRaces">0</span></div>
+            </div>
+        </div>
+        <div id="ui">
+            <div style="font-size: 24px; font-weight: bold; margin-bottom: 15px;">🏎️ RACE CAR</div>
+            <div>💨 Speed: <span id="speed">0</span> km/h</div>
+            <div class="speed-bar">
+                <div class="speed-fill" id="speedFill" style="width: 0%"></div>
+            </div>
+            <div>⏱️ Lap: <span id="currentLap">1</span>/<span id="totalLaps">3</span></div>
+            <div>🕐 Lap Time: <span id="lapTime">0:00</span></div>
+            <div>🏁 Best Lap: <span id="bestLapTime">--:--</span></div>
+            <div>📍 Position: <span id="position">1</span>/<span id="totalCars">4</span></div>
+            <div id="boostBar" style="display: none;">
+                <div>🔥 BOOST</div>
+                <div class="speed-bar" style="width: 100px; height: 10px;">
+                    <div class="speed-fill" id="boostFill" style="width: 100%; background: linear-gradient(90deg, #ff6b6b, #ffa500);"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="controls">
+            <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">🎮 CONTROLS</div>
+            <div>🏎️ W/↑ - Accelerate</div>
+            <div>🛑 S/↓ - Brake/Reverse</div>
+            <div>↶ A/← - Turn Left</div>
+            <div>↷ D/→ - Turn Right</div>
+            <div>👁️ C - Change Camera</div>
+            <div>💨 SPACE - Boost</div>
+            <div>⏸️ ESC - Pause Menu</div>
+        </div>
+        
+        <canvas id="minimap" class="minimap"></canvas>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="enhanced_game.js"></script>
+</body>
+</html>

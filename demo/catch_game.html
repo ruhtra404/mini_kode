@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Falling Objects</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #87CEEB, #98FB98);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        #gameContainer {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        #gameCanvas {
+            border: 2px solid #333;
+            background: linear-gradient(to bottom, #E6F3FF, #B3E5FC);
+            display: block;
+            margin: 20px auto;
+        }
+        
+        #score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        #gameOver {
+            font-size: 20px;
+            color: #ff4444;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        #instructions {
+            color: #666;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <h1>Catch the Falling Objects!</h1>
+        <div id="instructions">Use arrow keys or A/D to move the basket</div>
+        <div id="score">Score: 0</div>
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        <div id="gameOver">Game Over! Final Score: <span id="finalScore">0</span></div>
+        <button onclick="startGame()">Start Game</button>
+        <button onclick="resetGame()">Reset</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const gameOverElement = document.getElementById('gameOver');
+        const finalScoreElement = document.getElementById('finalScore');
+
+        let gameRunning = false;
+        let score = 0;
+        let lives = 3;
+        
+        // Basket properties
+        const basket = {
+            x: canvas.width / 2 - 40,
+            y: canvas.height - 60,
+            width: 80,
+            height: 40,
+            speed: 8
+        };
+        
+        // Falling objects array
+        let fallingObjects = [];
+        
+        // Object properties
+        const objectTypes = [
+            { color: '#FF6B6B', points: 10, emoji: '🍎' },
+            { color: '#4ECDC4', points: 20, emoji: '💎' },
+            { color: '#FFE66D', points: 5, emoji: '🍌' },
+            { color: '#FF8B94', points: 15, emoji: '🍓' }
+        ];
+        
+        // Keyboard controls
+        const keys = {};
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+        
+        // Create falling object
+        function createFallingObject() {
+            const type = objectTypes[Math.floor(Math.random() * objectTypes.length)];
+            fallingObjects.push({
+                x: Math.random() * (canvas.width - 30),
+                y: -30,
+                width: 30,
+                height: 30,
+                speed: Math.random() * 3 + 2,
+                type: type
+            });
+        }
+        
+        // Update basket position
+        function updateBasket() {
+            if ((keys['ArrowLeft'] || keys['a'] || keys['A']) && basket.x > 0) {
+                basket.x -= basket.speed;
+            }
+            if ((keys['ArrowRight'] || keys['d'] || keys['D']) && basket.x < canvas.width - basket.width) {
+                basket.x += basket.speed;
+            }
+        }
+        
+        // Update falling objects
+        function updateFallingObjects() {
+            for (let i = fallingObjects.length - 1; i >= 0; i--) {
+                const obj = fallingObjects[i];
+                obj.y += obj.speed;
+                
+                // Check collision with basket
+                if (obj.y + obj.height > basket.y && 
+                    obj.x < basket.x + basket.width && 
+                    obj.x + obj.width > basket.x) {
+                    score += obj.type.points;
+                    scoreElement.textContent = `Score: ${score}`;
+                    fallingObjects.splice(i, 1);
+                    continue;
+                }
+                
+                // Remove objects that fell off screen
+                if (obj.y > canvas.height) {
+                    lives--;
+                    fallingObjects.splice(i, 1);
+                    
+                    if (lives <= 0) {
+                        endGame();
+                    }
+                }
+            }
+        }
+        
+        // Draw everything
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw basket
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+            ctx.strokeStyle = '#654321';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(basket.x, basket.y, basket.width, basket.height);
+            
+            // Draw basket handle
+            ctx.beginPath();
+            ctx.arc(basket.x + basket.width/2, basket.y, 20, Math.PI, 0);
+            ctx.strokeStyle = '#654321';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+            
+            // Draw falling objects
+            fallingObjects.forEach(obj => {
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(obj.type.emoji, obj.x + obj.width/2, obj.y + obj.height/2 + 8);
+            });
+            
+            // Draw lives
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'left';
+            ctx.fillText(`Lives: ${'❤️'.repeat(lives)}`, 10, 25);
+        }
+        
+        // Game loop
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            updateBasket();
+            updateFallingObjects();
+            
+            // Create new objects randomly
+            if (Math.random() < 0.02) {
+                createFallingObject();
+            }
+            
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Start game
+        function startGame() {
+            if (gameRunning) return;
+            
+            gameRunning = true;
+            score = 0;
+            lives = 3;
+            fallingObjects = [];
+            scoreElement.textContent = `Score: ${score}`;
+            gameOverElement.style.display = 'none';
+            
+            gameLoop();
+        }
+        
+        // End game
+        function endGame() {
+            gameRunning = false;
+            finalScoreElement.textContent = score;
+            gameOverElement.style.display = 'block';
+        }
+        
+        // Reset game
+        function resetGame() {
+            gameRunning = false;
+            score = 0;
+            lives = 3;
+            fallingObjects = [];
+            basket.x = canvas.width / 2 - 40;
+            scoreElement.textContent = `Score: ${score}`;
+            gameOverElement.style.display = 'none';
+            draw();
+        }
+        
+        // Initial draw
+        draw();
+    </script>
+</body>
+</html>

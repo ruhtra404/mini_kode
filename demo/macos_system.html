@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>macOS System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 顶部菜单栏 */
+        .menu-bar {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            color: white;
+            font-size: 13px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .apple-logo {
+            font-size: 16px;
+            margin-right: 20px;
+        }
+
+        .menu-items {
+            display: flex;
+            gap: 15px;
+        }
+
+        .menu-item {
+            cursor: pointer;
+            padding: 2px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .system-info {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* 桌面区域 */
+        .desktop {
+            height: calc(100vh - 24px - 70px);
+            margin-top: 24px;
+            margin-bottom: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .desktop-icon {
+            position: absolute;
+            width: 80px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .desktop-icon:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .desktop-icon.selected {
+            background-color: rgba(0, 122, 255, 0.3);
+        }
+
+        .icon-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .icon-label {
+            color: white;
+            font-size: 12px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Dock栏 */
+        .dock {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px);
+            border-radius: 16px 16px 0 0;
+            padding: 8px 16px;
+            display: flex;
+            gap: 8px;
+            align-items: end;
+            z-index: 1000;
+        }
+
+        .dock-item {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .dock-item:hover {
+            transform: translateY(-8px) scale(1.1);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .dock-item.active {
+            background: rgba(0, 122, 255, 0.6);
+        }
+
+        .dock-icon {
+            font-size: 24px;
+            color: white;
+        }
+
+        .dock-item::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .dock-item:hover::after {
+            opacity: 1;
+        }
+
+        /* 窗口 */
+        .window {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            min-width: 400px;
+            min-height: 300px;
+            display: none;
+            overflow: hidden;
+        }
+
+        .window.active {
+            display: block;
+        }
+
+        .window-header {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: move;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .window-control {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .close { background-color: #ff5f57; }
+        .minimize { background-color: #ffbd2e; }
+        .maximize { background-color: #28ca42; }
+
+        .window-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .window-content {
+            padding: 20px;
+            color: #333;
+        }
+
+        /* 时间显示 */
+        .clock {
+            font-family: 'Courier New', monospace;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .dock {
+                padding: 6px 12px;
+                gap: 6px;
+            }
+            
+            .dock-item {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .desktop-icon {
+                width: 60px;
+                height: 80px;
+            }
+            
+            .icon-image {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部菜单栏 -->
+    <div class="menu-bar">
+        <div style="display: flex; align-items: center;">
+            <span class="apple-logo">🍎</span>
+            <div class="menu-items">
+                <div class="menu-item">Finder</div>
+                <div class="menu-item">文件</div>
+                <div class="menu-item">编辑</div>
+                <div class="menu-item">显示</div>
+                <div class="menu-item">前往</div>
+                <div class="menu-item">窗口</div>
+                <div class="menu-item">帮助</div>
+            </div>
+        </div>
+        <div class="system-info">
+            <div class="menu-item">🔋 100%</div>
+            <div class="menu-item">📶</div>
+            <div class="menu-item clock" id="clock"></div>
+        </div>
+    </div>
+
+    <!-- 桌面区域 -->
+    <div class="desktop" id="desktop">
+        <!-- 桌面图标 -->
+        <div class="desktop-icon" style="top: 50px; left: 50px;" data-app="finder">
+            <div class="icon-image" style="background: linear-gradient(45deg, #007AFF, #5856D6);">📁</div>
+            <div class="icon-label">Finder</div>
+        </div>
+        
+        <div class="desktop-icon" style="top: 50px; left: 150px;" data-app="safari">
+            <div class="icon-image" style="background: linear-gradient(45deg, #FF9500, #FF6B35);">🌐</div>
+            <div class="icon-label">Safari</div>
+        </div>
+        
+        <div class="desktop-icon" style="top: 50px; left: 250px;" data-app="notes">
+            <div class="icon-image" style="background: linear-gradient(45deg, #FFCC00, #FF9500);">📝</div>
+            <div class="icon-label">备忘录</div>
+        </div>
+        
+        <div class="desktop-icon" style="top: 180px; left: 50px;" data-app="calculator">
+            <div class="icon-image" style="background: linear-gradient(45deg, #4CD964, #34C759);">🧮</div>
+            <div class="icon-label">计算器</div>
+        </div>
+        
+        <div class="desktop-icon" style="top: 180px; left: 150px;" data-app="calendar">
+            <div class="icon-image" style="background: linear-gradient(45deg, #AF52DE, #BF2D65);">📅</div>
+            <div class="icon-label">日历</div>
+        </div>
+        
+        <div class="desktop-icon" style="top: 180px; left: 250px;" data-app="music">
+            <div class="icon-image" style="background: linear-gradient(45deg, #FF2D55, #FF375F);">🎵</div>
+            <div class="icon-label">音乐</div>
+        </div>
+    </div>
+
+    <!-- Dock栏 -->
+    <div class="dock">
+        <div class="dock-item active" data-app="finder" data-tooltip="Finder">
+            <div class="dock-icon">📁</div>
+        </div>
+        <div class="dock-item" data-app="safari" data-tooltip="Safari">
+            <div class="dock-icon">🌐</div>
+        </div>
+        <div class="dock-item" data-app="notes" data-tooltip="备忘录">
+            <div class="dock-icon">📝</div>
+        </div>
+        <div class="dock-item" data-app="calculator" data-tooltip="计算器">
+            <div class="dock-icon">🧮</div>
+        </div>
+        <div class="dock-item" data-app="calendar" data-tooltip="日历">
+            <div class="dock-icon">📅</div>
+        </div>
+        <div class="dock-item" data-app="music" data-tooltip="音乐">
+            <div class="dock-icon">🎵</div>
+        </div>
+        <div class="dock-item" data-app="settings" data-tooltip="系统偏好设置">
+            <div class="dock-icon">⚙️</div>
+        </div>
+    </div>
+
+    <!-- 应用窗口 -->
+    <div class="window" id="finder-window" style="top: 100px; left: 100px;">
+        <div class="window-header">
+            <div class="window-controls">
+                <div class="window-control close" onclick="closeWindow('finder-window')"></div>
+                <div class="window-control minimize"></div>
+                <div class="window-control maximize"></div>
+            </div>
+            <div class="window-title">Finder</div>
+            <div></div>
+        </div>
+        <div class="window-content">
+            <h3>欢迎使用 macOS</h3>
+            <p>这是一个仿制的 macOS 系统界面。</p>
+            <p>您可以点击桌面图标或 Dock 栏中的应用来打开窗口。</p>
+        </div>
+    </div>
+
+    <div class="window" id="safari-window" style="top: 120px; left: 120px;">
+        <div class="window-header">
+            <div class="window-controls">
+                <div class="window-control close" onclick="closeWindow('safari-window')"></div>
+                <div class="window-control minimize"></div>
+                <div class="window-control maximize"></div>
+            </div>
+            <div class="window-title">Safari</div>
+            <div></div>
+        </div>
+        <div class="window-content">
+            <h3>Safari 浏览器</h3>
+            <p>这是 Safari 浏览器的模拟界面。</p>
+            <p>地址栏: <input type="text" placeholder="输入网址..." style="width: 300px; padding: 5px; border: 1px solid #ccc; border-radius: 4px;"></p>
+        </div>
+    </div>
+
+    <div class="window" id="notes-window" style="top: 140px; left: 140px;">
+        <div class="window-header">
+            <div class="window-controls">
+                <div class="window-control close" onclick="closeWindow('notes-window')"></div>
+                <div class="window-control minimize"></div>
+                <div class="window-control maximize"></div>
+            </div>
+            <div class="window-title">备忘录</div>
+            <div></div>
+        </div>
+        <div class="window-content">
+            <h3>备忘录</h3>
+            <textarea placeholder="在这里输入您的笔记..." style="width: 100%; height: 200px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; resize: none;"></textarea>
+        </div>
+    </div>
+
+    <div class="window" id="calculator-window" style="top: 160px; left: 160px;">
+        <div class="window-header">
+            <div class="window-controls">
+                <div class="window-control close" onclick="closeWindow('calculator-window')"></div>
+                <div class="window-control minimize"></div>
+                <div class="window-control maximize"></div>
+            </div>
+            <div class="window-title">计算器</div>
+            <div></div>
+        </div>
+        <div class="window-content">
+            <h3>计算器</h3>
+            <div style="background: #f0f0f0; padding: 20px; border-radius: 8px;">
+                <input type="text" id="calc-display" readonly style="width: 100%; height: 40px; font-size: 18px; text-align: right; margin-bottom: 10px; padding: 5px;">
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
+                    <button onclick="clearCalc()" style="padding: 15px; font-size: 16px;">C</button>
+                    <button onclick="appendToCalc('/')" style="padding: 15px; font-size: 16px;">÷</button>
+                    <button onclick="appendToCalc('*')" style="padding: 15px; font-size: 16px;">×</button>
+                    <button onclick="deleteLastCalc()" style="padding: 15px; font-size: 16px;">⌫</button>
+                    <button onclick="appendToCalc('7')" style="padding: 15px; font-size: 16px;">7</button>
+                    <button onclick="appendToCalc('8')" style="padding: 15px; font-size: 16px;">8</button>
+                    <button onclick="appendToCalc('9')" style="padding: 15px; font-size: 16px;">9</button>
+                    <button onclick="appendToCalc('-')" style="padding: 15px; font-size: 16px;">-</button>
+                    <button onclick="appendToCalc('4')" style="padding: 15px; font-size: 16px;">4</button>
+                    <button onclick="appendToCalc('5')" style="padding: 15px; font-size: 16px;">5</button>
+                    <button onclick="appendToCalc('6')" style="padding: 15px; font-size: 16px;">6</button>
+                    <button onclick="appendToCalc('+')" style="padding: 15px; font-size: 16px;">+</button>
+                    <button onclick="appendToCalc('1')" style="padding: 15px; font-size: 16px;">1</button>
+                    <button onclick="appendToCalc('2')" style="padding: 15px; font-size: 16px;">2</button>
+                    <button onclick="appendToCalc('3')" style="padding: 15px; font-size: 16px;">3</button>
+                    <button onclick="calculateResult()" style="padding: 15px; font-size: 16px; grid-row: span 2;">=</button>
+                    <button onclick="appendToCalc('0')" style="padding: 15px; font-size: 16px; grid-column: span 2;">0</button>
+                    <button onclick="appendToCalc('.')" style="padding: 15px; font-size: 16px;">.</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 时钟功能
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('clock').textContent = timeString;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 桌面图标点击事件
+        document.querySelectorAll('.desktop-icon').forEach(icon => {
+            icon.addEventListener('click', function() {
+                // 移除其他图标的选中状态
+                document.querySelectorAll('.desktop-icon').forEach(i => i.classList.remove('selected'));
+                // 添加当前图标的选中状态
+                this.classList.add('selected');
+                
+                const appName = this.getAttribute('data-app');
+                openWindow(appName + '-window');
+            });
+        });
+
+        // Dock栏点击事件
+        document.querySelectorAll('.dock-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 移除其他Dock项的活跃状态
+                document.querySelectorAll('.dock-item').forEach(i => i.classList.remove('active'));
+                // 添加当前Dock项的活跃状态
+                this.classList.add('active');
+                
+                const appName = this.getAttribute('data-app');
+                if (appName === 'settings') {
+                    alert('系统偏好设置功能开发中...');
+                } else {
+                    openWindow(appName + '-window');
+                }
+            });
+        });
+
+        // 打开窗口
+        function openWindow(windowId) {
+            // 关闭所有窗口
+            document.querySelectorAll('.window').forEach(window => {
+                window.classList.remove('active');
+            });
+            
+            // 打开指定窗口
+            const window = document.getElementById(windowId);
+            if (window) {
+                window.classList.add('active');
+            }
+        }
+
+        // 关闭窗口
+        function closeWindow(windowId) {
+            const window = document.getElementById(windowId);
+            if (window) {
+                window.classList.remove('active');
+            }
+        }
+
+        // 计算器功能
+        let calcDisplay = '';
+
+        function appendToCalc(value) {
+            calcDisplay += value;
+            document.getElementById('calc-display').value = calcDisplay;
+        }
+
+        function clearCalc() {
+            calcDisplay = '';
+            document.getElementById('calc-display').value = '';
+        }
+
+        function deleteLastCalc() {
+            calcDisplay = calcDisplay.slice(0, -1);
+            document.getElementById('calc-display').value = calcDisplay;
+        }
+
+        function calculateResult() {
+            try {
+                const result = eval(calcDisplay);
+                calcDisplay = result.toString();
+                document.getElementById('calc-display').value = calcDisplay;
+            } catch (error) {
+                calcDisplay = '';
+                document.getElementById('calc-display').value = '错误';
+            }
+        }
+
+        // 窗口拖拽功能
+        let isDragging = false;
+        let currentWindow = null;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        document.querySelectorAll('.window-header').forEach(header => {
+            header.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                currentWindow = this.parentElement;
+                const rect = currentWindow.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                this.style.cursor = 'grabbing';
+            });
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (isDragging && currentWindow) {
+                const x = e.clientX - offsetX;
+                const y = e.clientY - offsetY;
+                currentWindow.style.left = x + 'px';
+                currentWindow.style.top = y + 'px';
+            }
+        });
+
+        document.addEventListener('mouseup', function() {
+            if (isDragging) {
+                isDragging = false;
+                if (currentWindow) {
+                    currentWindow.querySelector('.window-header').style.cursor = 'move';
+                    currentWindow = null;
+                }
+            }
+        });
+
+        // 点击桌面空白处取消图标选中
+        document.getElementById('desktop').addEventListener('click', function(e) {
+            if (e.target === this) {
+                document.querySelectorAll('.desktop-icon').forEach(icon => {
+                    icon.classList.remove('selected');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

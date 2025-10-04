@@ -1,0 +1,163 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.controls {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.controls label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.controls input[type="range"] {
+    width: 100px;
+    height: 5px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.controls input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.controls span {
+    font-weight: bold;
+    color: #00f2fe;
+    min-width: 30px;
+}
+
+#resetBtn {
+    padding: 8px 16px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(238, 90, 36, 0.3);
+}
+
+#resetBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(238, 90, 36, 0.4);
+}
+
+#waterCanvas {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 15px;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    cursor: crosshair;
+    transition: all 0.3s ease;
+}
+
+#waterCanvas:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.info {
+    margin-top: 15px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    h1 {
+        font-size: 2em;
+    }
+    
+    #waterCanvas {
+        width: 100%;
+        max-width: 600px;
+        height: auto;
+    }
+    
+    .controls {
+        gap: 10px;
+    }
+    
+    .controls input[type="range"] {
+        width: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    
+    .controls {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .controls label {
+        font-size: 12px;
+    }
+}

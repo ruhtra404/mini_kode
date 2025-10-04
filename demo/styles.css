@@ -1,0 +1,263 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+}
+
+#gameContainer {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+#gameCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* UI Styles */
+#ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+#speedometer {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #00ff00;
+}
+
+#speed {
+    font-size: 48px;
+    font-weight: bold;
+    color: #00ff00;
+    text-shadow: 0 0 10px #00ff00;
+}
+
+#speedUnit {
+    font-size: 14px;
+    color: #aaa;
+    margin-top: 5px;
+}
+
+#position {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #ffff00;
+}
+
+#positionText {
+    font-size: 18px;
+    color: #ffff00;
+    font-weight: bold;
+}
+
+#lapTime {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #00ffff;
+}
+
+#currentLap, #bestLap {
+    font-size: 16px;
+    color: #00ffff;
+    margin: 5px 0;
+}
+
+#minimap {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid #ff00ff;
+}
+
+#minimapCanvas {
+    border: 1px solid #ff00ff;
+    border-radius: 5px;
+}
+
+#controls {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #ff6600;
+    display: flex;
+    gap: 20px;
+}
+
+.control-item {
+    font-size: 12px;
+    color: #ff6600;
+    text-align: center;
+}
+
+/* Menu Styles */
+.menu {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.menu h1 {
+    font-size: 48px;
+    margin-bottom: 50px;
+    text-shadow: 0 0 20px #00ff00;
+    color: #00ff00;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.menu-buttons button {
+    padding: 15px 40px;
+    font-size: 18px;
+    background: linear-gradient(45deg, #00ff00, #00aa00);
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.menu-buttons button:hover {
+    background: linear-gradient(45deg, #00aa00, #00ff00);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px #00ff00;
+}
+
+/* Loading Screen */
+.loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.loading.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #00ff00;
+}
+
+.loading-bar {
+    width: 300px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid #00ff00;
+}
+
+.loading-progress {
+    height: 100%;
+    background: linear-gradient(90deg, #00ff00, #00aa00);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #speedometer {
+        bottom: 20px;
+        right: 20px;
+        padding: 15px;
+    }
+    
+    #speed {
+        font-size: 36px;
+    }
+    
+    #position, #lapTime {
+        top: 20px;
+        padding: 10px;
+    }
+    
+    #minimap {
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    #controls {
+        bottom: 20px;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .menu h1 {
+        font-size: 36px;
+    }
+    
+    .menu-buttons button {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+}
