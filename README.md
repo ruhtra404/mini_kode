@@ -1,6 +1,6 @@
-# 霸道总裁爱上2分钟手搓Claude Code【懒羊羊青春版】
-
-> Languages: [中文](README.md) | [English](README_en.md)
+# 手搓Claude Code【青春版】
+> Languages: [中文](README.md) | [English](README_en.md)  
+> 正式版：[Kode - 开源Agent CLI 编码 & 运维工具](https://github.com/shareAI-lab/Kode)
 
 <img height="450" alt="image" src="https://github.com/user-attachments/assets/0e1e31f8-064f-4908-92ce-121e2eb8d453" />
 <img height="450" alt="image" src="https://github.com/user-attachments/assets/2884ea3a-a299-463a-b69c-2ec93088fd17" />
