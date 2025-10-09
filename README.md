@@ -1,6 +1,8 @@
 # 手搓迷你Kode【青春版】
-> Languages: [中文](README.md) | [English](README_en.md)  
-> 正式版：[Kode - 开源Agent CLI 编码 & 运维工具](https://github.com/shareAI-lab/Kode)
+Languages: [中文](README.md) | [English](README_en.md)    
+正式版：[Kode - 开源Agent CLI 编码 & 运维工具](https://github.com/shareAI-lab/Kode)  
+<img width="360" height="360" alt="image" src="https://github.com/user-attachments/assets/9813fca0-a6dd-4813-972e-f9bf6d62add8" />  <br>
+Fellow us on X: https://x.com/baicai003    
 
 <img height="450" alt="image" src="https://github.com/user-attachments/assets/0e1e31f8-064f-4908-92ce-121e2eb8d453" />
 <img height="450" alt="image" src="https://github.com/user-attachments/assets/2884ea3a-a299-463a-b69c-2ec93088fd17" />
