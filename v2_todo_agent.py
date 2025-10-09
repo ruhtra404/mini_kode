@@ -14,11 +14,9 @@ except Exception as exc:  # pragma: no cover - install hint only
     sys.stderr.write("Install with: pip install anthropic\n")
     raise exc
 
-
 ANTHROPIC_BASE_URL = "https://api.moonshot.cn/anthropic"
-ANTHROPIC_API_KEY = "sk-xxx"  # Replace with your key
+ANTHROPIC_API_KEY = "sk-xxx"  # Replace with your API key
 AGENT_MODEL = "kimi-k2-turbo-preview"
-
 
 WORKDIR = Path.cwd()
 MAX_TOOL_RESULT_CHARS = 100_000

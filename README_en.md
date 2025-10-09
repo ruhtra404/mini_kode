@@ -1,6 +1,6 @@
 # mini_claude_code Overview (English)
 
-This repository showcases a step-by-step recreation of a “mini Claude Code” workflow. With a few hundred lines of Python we rebuild the essential loops behind Anthropic’s engineering assistant and release them in two major stages:
+This repository showcases a step-by-step recreation of a “mini Kode” workflow. With a few hundred lines of Python we rebuild the essential loops behind Anthropic’s engineering assistant and release them in two major stages:
 
 - **v1 (baseline)** – demonstrates the core *model-as-agent* loop: the LLM is the only decision maker, the CLI just exposes tools for reading, editing, writing files, and running shell commands.
 - **v2 (todos)** – layers structured planning on top of v1 with a shared todo board and system reminders so the model stays disciplined during multi-step tasks.
