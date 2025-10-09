@@ -614,7 +614,7 @@ def query(messages: List[Dict[str, Any]], opts: Dict[str, Any] | None = None) ->
 
 def main() -> None:
     clear_screen()
-    render_banner("Tiny CC Agent", "todo-enabled")
+    render_banner("Tiny Kode Agent", "todo-enabled")
     print(f"{INFO_COLOR}Workspace: {WORKDIR}{RESET}")
     print(f"{INFO_COLOR}Type \"exit\" or \"quit\" to leave.{RESET}\n")
 

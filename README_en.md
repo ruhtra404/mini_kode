@@ -1,4 +1,4 @@
-# mini_claude_code Overview (English)
+# mini Kode Agent
 
 This repository showcases a step-by-step recreation of a “mini Kode” workflow. With a few hundred lines of Python we rebuild the essential loops behind Anthropic’s engineering assistant and release them in two major stages:
 
